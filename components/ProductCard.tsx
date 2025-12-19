@@ -28,7 +28,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <h3 className="font-semibold text-brand-black text-sm md:text-base leading-tight group-hover:text-gray-600 transition-colors truncate">
           {product.name}
         </h3>
-        <p className="text-gray-500 text-xs md:text-sm truncate">{product.category} • {product.gender}</p>
+        <p className="text-gray-500 text-xs md:text-sm truncate">{product.category}</p>
         <p className="font-medium text-brand-black mt-1 text-sm md:text-base">${product.price}</p>
       </div>
     </Link>

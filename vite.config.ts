@@ -8,8 +8,9 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     define: {
-      // Polyfill process.env.API_KEY for the Gemini Service
-      'process.env.API_KEY': JSON.stringify(env.API_KEY)
+      // Polyfill process.env.* for the Gemini Service
+      'process.env.API_KEY': JSON.stringify(env.API_KEY),
+      'process.env.VISION_MODEL': JSON.stringify(env.VISION_MODEL)
     },
     build: {
       outDir: 'dist',

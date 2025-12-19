@@ -1,10 +1,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { ShoppingBag, Search, Sparkles, Camera, Loader2, ChevronLeft } from 'lucide-react';
+import { ShoppingBag, Search, Camera, Loader2, ChevronLeft } from 'lucide-react';
 import { useApp } from '../App';
 import { analyzeSearchQuery, searchByImage } from '../services/geminiService';
-import { Category, Activity, Gender, SearchFilters } from '../types';
+import { Category, Activity, SearchFilters } from '../types';
 
 // Menu Configuration
 interface MenuColumn {
@@ -39,17 +39,17 @@ const MENU_DATA: MenuData = {
       {
         title: "Featured",
         links: [
-          { label: "New Arrivals", filter: { gender: Gender.ADULT, featured: 'new' } },
-          { label: "Best Sellers", filter: { gender: Gender.ADULT, featured: 'bestseller' } },
+          { label: "New Arrivals", filter: { featured: 'new' } },
+          { label: "Best Sellers", filter: { featured: 'bestseller' } },
         ]
       },
       {
         title: "Shop By Sport",
-        links: Object.values(Activity).map(a => ({ label: a, filter: { gender: Gender.ADULT, activity: a } }))
+        links: Object.values(Activity).map(a => ({ label: a, filter: { activity: a } }))
       },
       {
         title: "Gear & Accessories",
-        links: Object.values(Category).map(c => ({ label: c, filter: { gender: Gender.ADULT, category: c } }))
+        links: Object.values(Category).map(c => ({ label: c, filter: { category: c } }))
       }
     ]
   },
@@ -58,43 +58,43 @@ const MENU_DATA: MenuData = {
       {
         title: "Featured",
         links: [
-          { label: "New Arrivals", filter: { gender: Gender.ADULT, featured: 'new' } },
-          { label: "Best Sellers", filter: { gender: Gender.ADULT, featured: 'bestseller' } },
+          { label: "New Arrivals", filter: { featured: 'new' } },
+          { label: "Best Sellers", filter: { featured: 'bestseller' } },
         ]
       },
       {
         title: "Shop By Sport",
-        links: Object.values(Activity).map(a => ({ label: a, filter: { gender: Gender.ADULT, activity: a } }))
+        links: Object.values(Activity).map(a => ({ label: a, filter: { activity: a } }))
       },
       {
         title: "Gear & Accessories",
-        links: Object.values(Category).map(c => ({ label: c, filter: { gender: Gender.ADULT, category: c } }))
+        links: Object.values(Category).map(c => ({ label: c, filter: { category: c } }))
       }
     ]
   },
   kids: {
     columns: [
        {
-        title: "Featured",
-        links: [
-          { label: "New Arrivals", filter: { gender: Gender.JUNIOR, featured: 'new' } },
-          { label: "Best Sellers", filter: { gender: Gender.JUNIOR, featured: 'bestseller' } },
+       title: "Featured",
+       links: [
+          { label: "New Arrivals", filter: { featured: 'new' } },
+          { label: "Best Sellers", filter: { featured: 'bestseller' } },
         ]
       },
       {
         title: "Shop By Sport",
-        links: Object.values(Activity).map(a => ({ label: a, filter: { gender: Gender.JUNIOR, activity: a } }))
+        links: Object.values(Activity).map(a => ({ label: a, filter: { activity: a } }))
       },
       {
         title: "Gear & Accessories",
-        links: Object.values(Category).map(c => ({ label: c, filter: { gender: Gender.JUNIOR, category: c } }))
+        links: Object.values(Category).map(c => ({ label: c, filter: { category: c } }))
       }
     ]
   }
 };
 
 const Navbar: React.FC = () => {
-  const { cart, toggleStylist } = useApp();
+  const { cart } = useApp();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
@@ -290,14 +290,7 @@ const Navbar: React.FC = () => {
                 />
            </div>
 
-            {/* AI Stylist Button */}
-            <button 
-                onClick={toggleStylist} 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                title="AI Stylist"
-            >
-                 <Sparkles className="w-6 h-6 text-brand-black" strokeWidth={2} />
-            </button>
+            {/* AI Stylist Button removed on header (available in bottom nav) */}
           
             {/* Cart Icon */}
            <Link to="/cart" className="relative p-2 hover:bg-gray-100 rounded-full transition-colors">

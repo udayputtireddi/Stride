@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Filter, X } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { MOCK_PRODUCTS } from '../constants';
-import { Category, Gender, Activity, SearchFilters } from '../types';
+import { Category, Activity, SearchFilters } from '../types';
 
 const ProductList: React.FC = () => {
   const location = useLocation();
@@ -15,7 +15,6 @@ const ProductList: React.FC = () => {
   const originalQuery = location.state?.originalQuery;
 
   // State for filters
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>('All');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedActivity, setSelectedActivity] = useState<string>('All');
   const [featured, setFeatured] = useState<'new' | 'bestseller' | null>(null);
@@ -25,14 +24,12 @@ const ProductList: React.FC = () => {
   useEffect(() => {
     if (location.state?.filters) {
       const f = location.state.filters as SearchFilters;
-      setSelectedAgeGroup(f.gender && f.gender !== 'Any' ? f.gender : 'All');
       setSelectedCategory(f.category && f.category !== 'Any' ? f.category : 'All');
       setSelectedActivity(f.activity && f.activity !== 'Any' ? f.activity : 'All');
       setFeatured(f.featured || null);
       if (f.maxPrice) setMaxPrice(f.maxPrice);
     } else {
       // Reset if no state provided
-      setSelectedAgeGroup('All');
       setSelectedCategory('All');
       setSelectedActivity('All');
       setFeatured(null);
@@ -42,7 +39,6 @@ const ProductList: React.FC = () => {
 
   const filteredProducts = useMemo(() => {
     return MOCK_PRODUCTS.filter(product => {
-      const ageMatch = selectedAgeGroup === 'All' || product.gender === selectedAgeGroup || product.gender === Gender.UNISEX;
       const categoryMatch = selectedCategory === 'All' || product.category === selectedCategory;
       const activityMatch = selectedActivity === 'All' || product.activity === selectedActivity;
       const priceMatch = product.price <= maxPrice;
@@ -50,12 +46,11 @@ const ProductList: React.FC = () => {
         ? true 
         : featured === 'new' ? product.isNew : product.isBestSeller;
 
-      return ageMatch && categoryMatch && activityMatch && priceMatch && featuredMatch;
+      return categoryMatch && activityMatch && priceMatch && featuredMatch;
     });
-  }, [selectedAgeGroup, selectedCategory, selectedActivity, maxPrice, featured]);
+  }, [selectedCategory, selectedActivity, maxPrice, featured]);
 
   const clearFilters = () => {
-    setSelectedAgeGroup('All');
     setSelectedCategory('All');
     setSelectedActivity('All');
     setFeatured(null);
@@ -153,25 +148,6 @@ const ProductList: React.FC = () => {
               </div>
             </div>
 
-            {/* Age Group / Sizing */}
-            <div>
-              <h3 className="font-bold mb-3 text-sm uppercase">Age Group / Size</h3>
-              <div className="space-y-2">
-                {['All', ...Object.values(Gender)].map(g => (
-                  <label key={g} className="flex items-center space-x-2 cursor-pointer group">
-                    <input 
-                      type="radio" 
-                      name="agegroup" 
-                      checked={selectedAgeGroup === g}
-                      onChange={() => setSelectedAgeGroup(g)}
-                      className="accent-black"
-                    />
-                    <span className={`text-sm ${selectedAgeGroup === g ? 'font-bold' : 'text-gray-600 group-hover:text-black'}`}>{g}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
             {/* Category */}
             <div>
               <h3 className="font-bold mb-3 text-sm uppercase">Equipment Type</h3>
@@ -236,21 +212,6 @@ const ProductList: React.FC = () => {
           </div>
           
            <div className="flex-grow overflow-y-auto p-6 space-y-8">
-            {/* Age */}
-            <div>
-              <h3 className="font-bold mb-3 text-sm uppercase">Age Group</h3>
-              <div className="flex flex-wrap gap-2">
-                {['All', ...Object.values(Gender)].map(g => (
-                  <button 
-                    key={g} 
-                    onClick={() => setSelectedAgeGroup(g)}
-                    className={`px-4 py-2 rounded-full border text-xs font-bold uppercase ${selectedAgeGroup === g ? 'bg-black text-white border-black' : 'border-gray-200 text-gray-600'}`}
-                  >
-                    {g}
-                  </button>
-                ))}
-              </div>
-            </div>
             {/* Category */}
             <div>
               <h3 className="font-bold mb-3 text-sm uppercase">Equipment</h3>

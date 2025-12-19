@@ -119,7 +119,7 @@ const Home: React.FC = () => {
               {/* Card 1 */}
               <div className="min-w-[80%] md:min-w-0 snap-center cursor-pointer group relative" onClick={() => handleShopBySport(Activity.CRICKET)}>
                   <div className="aspect-[3/4] relative overflow-hidden mb-3">
-                     <img src="https://images.unsplash.com/photo-1593341646261-12c82f05eb4d?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700" />
+                     <img src="/images/categories/cricket-collection.jpg" className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700" />
                      <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
                      <div className="absolute bottom-0 left-0 p-6 w-full bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                          <h3 className="text-white font-bold text-xl md:text-2xl uppercase italic tracking-tighter">Cricket<br/>Collection</h3>
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
                {/* Card 2 */}
               <div className="min-w-[80%] md:min-w-0 snap-center cursor-pointer group relative" onClick={() => handleShopBySport(Activity.SOCCER)}>
                   <div className="aspect-[3/4] relative overflow-hidden mb-3">
-                     <img src="https://images.unsplash.com/photo-1518605348400-437731db4857?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700" />
+                     <img src="/images/categories/football-essentials.jpg" className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700" />
                      <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
                      <div className="absolute bottom-0 left-0 p-6 w-full bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                          <h3 className="text-white font-bold text-xl md:text-2xl uppercase italic tracking-tighter">Football<br/>Essentials</h3>
@@ -141,7 +141,7 @@ const Home: React.FC = () => {
                {/* Card 3 */}
               <div className="min-w-[80%] md:min-w-0 snap-center cursor-pointer group relative" onClick={() => handleShopBySport(Activity.TENNIS)}>
                   <div className="aspect-[3/4] relative overflow-hidden mb-3">
-                     <img src="https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700" />
+                     <img src="/images/categories/tennis-pro-gear.jpg" className="w-full h-full object-cover md:group-hover:scale-105 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
                       <div className="absolute bottom-0 left-0 p-6 w-full bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                          <h3 className="text-white font-bold text-xl md:text-2xl uppercase italic tracking-tighter">Tennis<br/>Pro Gear</h3>

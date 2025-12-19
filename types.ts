@@ -34,7 +34,6 @@ export interface Product {
   features: string[];
   isNew?: boolean;
   isBestSeller?: boolean;
-  generated?: boolean; // Flag to track if AI images are populated
 }
 
 export interface CartItem extends Product {

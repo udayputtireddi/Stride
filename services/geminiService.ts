@@ -6,13 +6,26 @@ import { Product } from "../types";
 // NOTE: In a real app, strict error handling for missing API keys is essential.
 // For this demo, we assume the environment variable is set as per instructions.
 const apiKey = process.env.API_KEY || ''; 
+const visionModel = process.env.VISION_MODEL || 'gemini-2.5-flash';
+
+// Debug log for production (will show in browser console)
+if (!apiKey) {
+    console.warn("StrideAI: API Key is missing. AI features will be disabled. Ensure API_KEY is set in your .env file during build.");
+} else {
+    // Log masked key to verify it loaded
+    console.log(`StrideAI: Service initialized (Key present: ${apiKey.substring(0, 4)}...)`);
+}
+
 const ai = new GoogleGenAI({ apiKey });
 
 /**
  * Smart Search: Analyzes a natural language query and extracts structured filters.
  */
 export const analyzeSearchQuery = async (query: string) => {
-  if (!apiKey) return null;
+  if (!apiKey) {
+    console.error("StrideAI: Cannot perform search. API Key missing.");
+    return null;
+  }
 
   try {
     const response = await ai.models.generateContent({
@@ -58,7 +71,7 @@ export const searchByImage = async (base64Image: string) => {
   if (!apiKey) return null;
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash-image',
+      model: visionModel,
       contents: {
         parts: [
           { inlineData: { mimeType: 'image/jpeg', data: base64Image } },
@@ -84,64 +97,6 @@ export const searchByImage = async (base64Image: string) => {
     console.error("Visual Search Error:", error);
     return null;
   }
-};
-
-/**
- * Generates a single image based on a prompt.
- */
-const generateImage = async (prompt: string): Promise<string | null> => {
-    if (!apiKey) return null;
-    try {
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image',
-            contents: { parts: [{ text: prompt }] }
-        });
-
-        for (const part of response.candidates?.[0]?.content?.parts || []) {
-            if (part.inlineData) {
-                return `data:image/png;base64,${part.inlineData.data}`;
-            }
-        }
-        return null;
-    } catch (error) {
-        console.error("Image Gen Error:", error);
-        return null;
-    }
-}
-
-/**
- * Generates 3 distinct product images (Studio, Detail, Action)
- */
-export const generateProductGallery = async (productName: string, category: string, activity: string, description: string): Promise<string[]> => {
-    const prompts = [
-        // 1. Studio Shot (Clean)
-        `A high-end e-commerce product photograph of ${productName} (${category} for ${activity}) isolated on a pure white background. Professional studio lighting, sharp focus, 4k resolution, minimalism.`,
-        
-        // 2. Detail Shot (Texture/Feature)
-        `A macro close-up photography shot of ${productName} (${category}), focusing on the texture and build quality. Shallow depth of field, dramatic lighting, highlighting the material details.`,
-        
-        // 3. Action/Context Shot (Lifestyle)
-        `A cinematic lifestyle photograph of ${productName} (${category}) being used on a ${activity} field/court. Dynamic motion blur, dramatic sunlight, photorealistic sports photography.`
-    ];
-
-    try {
-        // Run requests in parallel for speed
-        const promises = prompts.map(p => generateImage(p));
-        const results = await Promise.all(promises);
-        
-        // Filter out any nulls if a generation failed
-        return results.filter((img): img is string => img !== null);
-    } catch (e) {
-        console.error("Gallery Generation Error", e);
-        return [];
-    }
-};
-
-/**
- * Generates a lifestyle scene for a product using AI (Legacy/Single use)
- */
-export const generateProductScene = async (productName: string, category: string, activity: string): Promise<string | null> => {
-  return generateImage(`A professional, high-definition advertising photograph of a ${productName} (${category}) used for ${activity}. The product should be in a dramatic, cinematic sports environment with dynamic lighting. Photorealistic, 4k quality.`);
 };
 
 interface AIResponse {

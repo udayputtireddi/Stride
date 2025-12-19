@@ -3,6 +3,14 @@ import React from 'react';
 import { Package, Calendar, Settings, ChevronRight, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
+const FOLLOWING_IMAGES = [
+  '/images/products/cricket-bat.jpg',
+  '/images/products/soccer-ball.jpg',
+  '/images/products/tennis-racket.jpg',
+  '/images/products/pickleball-paddle.jpg',
+  '/images/products/badminton-racket.jpg'
+];
+
 const Profile: React.FC = () => {
   const navigate = useNavigate();
 
@@ -66,9 +74,9 @@ const Profile: React.FC = () => {
             </div>
             
             <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4">
-                {[1,2,3,4,5].map(i => (
-                    <div key={i} className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-full overflow-hidden border-2 border-transparent hover:border-black transition-colors">
-                        <img src={`https://images.unsplash.com/photo-${1500000000000 + i}?w=100&h=100&fit=crop`} alt="Following" className="w-full h-full object-cover" />
+                {FOLLOWING_IMAGES.map((src, index) => (
+                    <div key={src} className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-full overflow-hidden border-2 border-transparent hover:border-black transition-colors">
+                        <img src={src} alt={`Following ${index + 1}`} className="w-full h-full object-cover" />
                     </div>
                 ))}
             </div>

@@ -39,7 +39,7 @@ const Cart: React.FC = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-bold text-lg">{item.name}</h3>
-                    <p className="text-gray-500 text-sm">{item.category} • {item.gender}</p>
+                    <p className="text-gray-500 text-sm">{item.category}</p>
                     <p className="text-gray-500 text-sm mt-1">Size: {item.selectedSize}</p>
                   </div>
                   <p className="font-bold text-lg">${item.price * item.quantity}</p>

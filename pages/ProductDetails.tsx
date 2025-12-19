@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useApp } from '../App.tsx';
 import { MOCK_PRODUCTS } from '../constants';
-import { Truck, ShieldCheck, Sparkles, Loader2, Maximize2 } from 'lucide-react';
-import { generateProductGallery } from '../services/geminiService';
+import { Truck, ShieldCheck, Sparkles, Maximize2 } from 'lucide-react';
 
 const SIZES = ['US 7', 'US 8', 'US 9', 'US 10', 'US 11', 'US 12'];
 
@@ -14,41 +13,12 @@ const ProductDetails: React.FC = () => {
   const { addToCart, toggleStylist } = useApp();
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   
-  // Gallery State
   const product = MOCK_PRODUCTS.find(p => p.id === id);
-  const [currentImages, setCurrentImages] = useState<string[]>(product ? product.images : []);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const images = product ? product.images : [];
 
   useEffect(() => {
-    if (!product) return;
-
-    // If we only have the fallback image (length 1) and haven't generated yet, trigger generation
-    if (product.images.length === 1 && !product.generated && !isGenerating) {
-        setIsGenerating(true);
-        generateProductGallery(product.name, product.category, product.activity, product.description)
-            .then((newImages) => {
-                if (newImages.length > 0) {
-                    setCurrentImages(newImages);
-                    
-                    // Update in-memory product reference so navigation preserves it
-                    product.images = newImages;
-                    product.generated = true;
-
-                    // Persist to Local Storage
-                    try {
-                        localStorage.setItem(`stride_imgs_${product.id}`, JSON.stringify(newImages));
-                    } catch (e) {
-                        console.warn("Quota exceeded, could not save images to local storage");
-                    }
-                }
-            })
-            .catch(err => console.error(err))
-            .finally(() => setIsGenerating(false));
-    } else {
-        // If product already has multiple images (hydrated from storage), ensure state matches
-        setCurrentImages(product.images);
-    }
+    setSelectedImageIndex(0);
   }, [product?.id]);
 
   if (!product) {
@@ -61,7 +31,8 @@ const ProductDetails: React.FC = () => {
     navigate('/cart');
   };
 
-  const currentImageSrc = currentImages[selectedImageIndex] || product.images[0];
+  const currentImageSrc = images[selectedImageIndex] || images[0];
+  const hasGallery = images.length > 1;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-12">
@@ -72,20 +43,8 @@ const ProductDetails: React.FC = () => {
             <img 
               src={currentImageSrc} 
               alt={product.name} 
-              className={`w-full h-full object-cover transition-all duration-700 ease-in-out ${isGenerating ? 'scale-105' : 'scale-100'}`}
+              className="w-full h-full object-cover transition-all duration-700 ease-in-out"
             />
-            
-            {isGenerating && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[2px] transition-all">
-                    <div className="flex flex-col items-center gap-3 bg-white/90 p-5 rounded-2xl shadow-xl">
-                        <Loader2 className="w-8 h-8 text-brand-black animate-spin" />
-                        <div className="text-center">
-                            <p className="text-xs font-bold uppercase tracking-wider text-gray-900">Creating 3D Assets</p>
-                            <p className="text-[10px] text-gray-500 mt-1">Generative AI is photographing the product...</p>
-                        </div>
-                    </div>
-                </div>
-            )}
             
              {product.isNew && (
               <span className="absolute top-4 left-4 bg-white text-black text-xs font-bold px-3 py-1.5 uppercase tracking-wider shadow-sm z-10">New Release</span>
@@ -97,38 +56,19 @@ const ProductDetails: React.FC = () => {
           </div>
           
           {/* Thumbnails Gallery */}
-          <div className="grid grid-cols-3 gap-3 md:gap-4">
-             {/* If generating, show skeletons. Else show images */}
-             {isGenerating ? (
-                 <>
-                    {[1, 2, 3].map(i => (
-                        <div key={i} className="aspect-square bg-gray-100 rounded-lg animate-pulse flex items-center justify-center">
-                            <Sparkles className="w-4 h-4 text-gray-300" />
-                        </div>
-                    ))}
-                 </>
-             ) : (
-                 currentImages.map((img, idx) => (
-                    <div 
-                        key={idx}
-                        className={`aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer relative transition-all ${selectedImageIndex === idx ? 'ring-2 ring-brand-highlight ring-offset-2' : 'hover:opacity-80'}`}
-                        onClick={() => setSelectedImageIndex(idx)}
-                    >
-                        <img src={img} className="w-full h-full object-cover" />
-                        {/* Labels for the AI types */}
-                        <div className="absolute bottom-0 left-0 w-full bg-black/50 py-1 text-center">
-                            <span className="text-[9px] font-bold text-white uppercase tracking-wider">
-                                {idx === 0 ? 'Studio' : idx === 1 ? 'Detail' : 'Action'}
-                            </span>
-                        </div>
-                    </div>
-                 ))
-             )}
-          </div>
-          <div className="flex items-center gap-2 justify-center text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-             <Sparkles className="w-3 h-3" />
-             <span>AI Generated Imagery</span>
-          </div>
+          {hasGallery && (
+            <div className="grid grid-cols-3 gap-3 md:gap-4">
+              {images.map((img, idx) => (
+                <div 
+                  key={idx}
+                  className={`aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer relative transition-all ${selectedImageIndex === idx ? 'ring-2 ring-brand-highlight ring-offset-2' : 'hover:opacity-80'}`}
+                  onClick={() => setSelectedImageIndex(idx)}
+                >
+                  <img src={img} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Product Info */}
@@ -139,7 +79,7 @@ const ProductDetails: React.FC = () => {
                <p className="text-xl md:text-2xl font-bold md:hidden">${product.price}</p>
             </div>
             
-            <p className="text-sm md:text-xl font-medium text-gray-500 mb-4">{product.category} • {product.gender}</p>
+            <p className="text-sm md:text-xl font-medium text-gray-500 mb-4">{product.category}</p>
             <p className="hidden md:block text-2xl font-bold mb-6">${product.price}</p>
             
             <p className="text-sm md:text-base text-gray-700 leading-relaxed mb-6">
