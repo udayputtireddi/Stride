@@ -1,19 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Stride
 
-# Run and deploy your AI Studio app
+Modern sports equipment storefront with a bold, editorial UI and fast browsing experience.
 
-This contains everything you need to run your app locally.
+## Screenshots
 
-View your app in AI Studio: https://ai.studio/apps/drive/1Lg34qX6kt-WiBg1YnoSMVLhxg68ci1QF
+**Desktop**
 
-## Run Locally
+![Desktop Hero](desktop-hero.png)
 
-**Prerequisites:**  Node.js
+![Desktop Sections](PLACEHOLDER_DESKTOP_SECTIONS_IMAGE_PATH)
 
+**Mobile**
+
+![Mobile Home](PLACEHOLDER_MOBILE_IMAGE_PATH)
+
+## Features
+
+- Curated product catalog with category and activity filters.
+- Editorial hero carousel and merchandising sections.
+- Mobile-first navigation with sleek bottom bar.
+- Static product imagery for reliable loading.
+
+## Tech Stack
+
+- React + TypeScript
+- Vite
+- Tailwind CSS
+- Firebase Hosting
+
+## Getting Started
 
 1. Install dependencies:
    `npm install`
-2. Run the app:
+2. Start the dev server:
    `npm run dev`
+
+## Build
+
+`npm run build`
+
+## Deploy (Firebase Hosting)
+
+`firebase deploy`
