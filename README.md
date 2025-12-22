@@ -1,4 +1,4 @@
-# Stride 
+# 
 
 Modern sports equipment storefront with a bold, editorial UI and fast browsing experience.
 
