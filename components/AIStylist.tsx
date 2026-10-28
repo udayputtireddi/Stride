@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Sparkles, ArrowRight, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Sparkles, ArrowRight, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ChatMessage } from '../types';
 import { getStylistResponse } from '../services/geminiService';
@@ -181,3 +181,4 @@ const AIStylist: React.FC<AIStylistProps> = ({ isOpen, onClose }) => {
 };
 
 export default AIStylist;
+

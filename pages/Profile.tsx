@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Package, Calendar, Settings, ChevronRight, Bell } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const FOLLOWING_IMAGES = [
   '/images/products/cricket-bat.jpg',
@@ -12,7 +11,6 @@ const FOLLOWING_IMAGES = [
 ];
 
 const Profile: React.FC = () => {
-  const navigate = useNavigate();
 
   return (
     <div className="max-w-2xl mx-auto px-6 py-8 pb-32">
@@ -93,3 +91,4 @@ const UserIconPlaceholder = () => (
 );
 
 export default Profile;
+
