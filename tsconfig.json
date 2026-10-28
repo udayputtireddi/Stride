@@ -21,17 +21,19 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "***.tsx"
+    "App.tsx",
+    "index.tsx",
+    "components",
+    "pages",
+    "services",
+    "constants.ts",
+    "types.ts",
+    "vite-env.d.ts"
   ],
   "exclude": [
     "node_modules",
     "dist",
     "functions",
     "server"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
   ]
 }
