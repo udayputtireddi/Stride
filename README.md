@@ -43,7 +43,7 @@ Modern sports equipment storefront with a bold, editorial UI and fast browsing e
 
 ## Deploy (Firebase Hosting)
 
-`firebase deploy`
+Deployment requires the approved backend, server secrets, quota database and hosting rewrite. Follow [the staged rollout instructions](docs/ai-backend-security.md); do not run a bare `firebase deploy`.
 
 
 
