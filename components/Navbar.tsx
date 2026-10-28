@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingBag, Search, Camera, Loader2, ChevronLeft } from 'lucide-react';
@@ -98,6 +97,7 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [aiError, setAIError] = useState('');
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAnalyzingImage, setIsAnalyzingImage] = useState(false);
@@ -127,32 +127,38 @@ const Navbar: React.FC = () => {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    const filters = await analyzeSearchQuery(searchQuery);
-    navigate('/shop', { state: { filters, originalQuery: searchQuery } });
-    setSearchQuery('');
-    setIsSearchOpen(false);
+    setAIError('');
+    try {
+      const filters = await analyzeSearchQuery(searchQuery);
+      navigate('/shop', { state: { filters, originalQuery: searchQuery } });
+      setSearchQuery('');
+      setIsSearchOpen(false);
+    } catch (error) { setAIError(error instanceof Error ? error.message : 'AI search is unavailable.'); }
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setAIError('');
+    if (file.size > 1000000 || !['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setAIError('Choose a JPEG, PNG or WebP image under 1 MB.');
+      e.target.value = ''; return;
+    }
     setIsAnalyzingImage(true);
     // Keep search open to show loading
     if (!isSearchOpen) setIsSearchOpen(true);
 
     const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = (reader.result as string).split(',')[1];
-      const filters = await searchByImage(base64String);
-      
-      setIsAnalyzingImage(false);
-      setSearchQuery(''); // clear text if any
-      
-      if (filters) {
+    reader.onerror = () => { setIsAnalyzingImage(false); setAIError('Unable to read image.'); };
+    reader.onload = async () => {
+      try {
+        const base64String = (reader.result as string).split(',')[1];
+        const filters = await searchByImage(base64String, file.type);
         navigate('/shop', { state: { filters, originalQuery: 'Visual Search Result' } });
-        setIsSearchOpen(false);
-      }
+        setSearchQuery(''); setIsSearchOpen(false);
+      } catch (error) { setAIError(error instanceof Error ? error.message : 'Visual search is unavailable.'); }
+      finally { setIsAnalyzingImage(false); }
     };
     reader.readAsDataURL(file);
     // Reset input
@@ -178,6 +184,8 @@ const Navbar: React.FC = () => {
   }
 
   return (
+    <>
+    {aiError && <div role="alert" style={{position: 'fixed', top: 80, right: 12, zIndex: 110, padding: 12, maxWidth: 360, background: '#fff', color: '#9f1239'}}>{aiError}<button type="button" onClick={() => setAIError('')} aria-label="Dismiss error"> × </button></div>}
     <nav 
         className="fixed top-0 w-full bg-white z-50 h-[60px] font-sans border-b border-transparent md:border-gray-100 transition-all duration-300"
         onMouseLeave={() => setActiveMenu(null)}
@@ -344,6 +352,7 @@ const Navbar: React.FC = () => {
       {/* Dimmed Background Overlay */}
       <div className={`fixed inset-0 top-[60px] bg-black/20 backdrop-blur-[2px] transition-opacity duration-500 z-30 pointer-events-none ${activeMenu ? 'opacity-100' : 'opacity-0'}`} />
     </nav>
+    </>
   );
 };
 
